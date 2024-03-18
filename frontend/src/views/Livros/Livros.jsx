@@ -14,13 +14,14 @@ const Livros = () => {
     setLivros(data)
   }
 
-  async function deleteLivro(Livroid) {
-    let valida = confirm(`Você realmente deseja remover o livro de ID: ${Livroid}`);
+  async function deleteLivro(id) {
+    let valida = confirm(`Você realmente deseja remover o livro de ID: ${id}`);
     if (valida) {
-      await LivrosService.deleteLivro(Livroid)
+      await LivrosService.deleteLivro(id)
         .then(({ data }) => {
           alert(data.message + 'Livro excluido')
-          getLivros()
+          getLivros();
+          navigate('/livros');
         })
         .catch(({ response: { data, status } }) => {
           alert(`${status} - ${data.mensagem}`)
@@ -41,14 +42,13 @@ const Livros = () => {
         <h1>Escolha o seu livro</h1>
         <ul>
           {livros.map((livro) => (
-            <li style={{ cursor: 'pointer' }}
-              key={livro.id}
-              onClick={() => {
-                navigate(`/livros/${livro._id}`)
-              }}>
-              {livro.titulo}
-              <span>{livro.editora}</span>
-
+            <li key={livro.id}>
+              <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/livros/LivroDetail/${livro._id}`)}>
+                {livro.titulo}
+                <div>
+                  <span>{livro.editora}</span>
+                </div>
+              </div>
               <div className='botoes'>
                 <div>
                   <Link className='btn edit' to={`/livros/edicao/${livro._id}`}>
@@ -58,25 +58,21 @@ const Livros = () => {
                   </Link>
                 </div>
                 <div>
-                  <Link
-                    className='btn delete'
-                    onClick={() => {
-                      console.log("ID:", livro._id); deleteLivro(livro._id)
-                    }}>
+                  <button className='btn delete' onClick={() => deleteLivro(livro._id)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
                       <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                     </svg>
-                  </Link>
+                  </button>
                 </div>
               </div>
-
             </li>
           ))}
-
         </ul>
       </div>
-    </>)
-
-}
+    </>
+  );
+};
 
 export default Livros
+
+
